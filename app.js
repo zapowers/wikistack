@@ -9,7 +9,7 @@ app.use(morgan("dev"));
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: false }));
 app.use('/wiki', require('./routes/wiki'));
-app.use('/user', require('./routes/user'));
+app.use('/users', require('./routes/user'));
 
 models.db.authenticate().
 then(() => {

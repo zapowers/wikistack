@@ -53,6 +53,8 @@ function slugMaker(string) {
     return output
   }
 
+  Page.belongsTo(User, { as: 'author' });
+
 module.exports = {
   db, Page, User
 };
