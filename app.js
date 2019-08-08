@@ -1,24 +1,31 @@
+const EXPRESS_PORT = 1337;
 const express = require("express");
 const morgan = require("morgan");
 const layout = require('./views/layout');
-const { db } = require('./models');
+const models = require('./models');
 const app = express();
 
 app.use(morgan("dev"));
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: false }));
+app.use('/wiki', require('./routes/wiki'));
+app.use('/user', require('./routes/user'));
 
-db.authenticate().
+models.db.authenticate().
 then(() => {
   console.log('connected to the database');
-})
+});
 
 app.get("/", (req, res) => {
   console.log('get on /');
-  res.send(layout('ZACH'));
+  res.redirect('/wiki');
 });
 
-const PORT = 1337;
-app.listen(PORT, () => {
-  console.log(`App listening in port ${PORT}`);
-});
+const main = async () => {
+  await models.db.sync({force: true});
+  app.listen(EXPRESS_PORT, () => {
+    console.log(`App listening in port ${EXPRESS_PORT}`);
+  });
+};
+
+main();
