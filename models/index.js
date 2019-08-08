@@ -26,9 +26,9 @@ const Page = db.define ('page', {
        type: Sequelize.ENUM('open', 'closed'),
    }
 });
-Page.beforeCreate ((pageInstance, optionsObject) => {
-    pageInstance.slug = slugMaker(pageInstance.title)
-})
+Page.beforeCreate ((pageInstance, _) => {
+    pageInstance.slug = slugMaker(pageInstance.title);
+});
 
 const User = db.define('user',{
    name: {
@@ -55,4 +55,4 @@ function slugMaker(string) {
 
 module.exports = {
   db, Page, User
-}
+};

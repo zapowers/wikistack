@@ -1,13 +1,16 @@
 const express = require('express');
 const { Page } = require("../models");
-const {addPage} = require('../views');
+const addPage = require('../views/addPage');
+const wikipage = require('../views/wikipage');
+const main = require('../views/main');
 
 const wikiRoute = express.Router();
 
 
 wikiRoute.get("/", async (req, res, next) => {
   try {
-    res.send('ZACH II');
+    const allPages = await Page.findAll();
+    res.send(main(allPages));
   } catch (error) {
       next(error);
   }
@@ -20,12 +23,8 @@ wikiRoute.post("/", async (req, res, next) => {
     slug: req.body.title,
   });
   try {
-    console.log (page)
-    await page.save();
-    res.redirect('/');
-    // const data = await client.query(baseQuery + "WHERE posts.id = $1", [req.params.id]);
-    // const post = data.rows[0];
-    // res.send(postDetails(post));
+    let addedPage = await page.save();
+    res.redirect(`${addedPage.slug}`);
   } catch (error) {
       next(error);
   }
@@ -36,6 +35,18 @@ wikiRoute.get("/add", async (req, res, next) => {
     res.send(addPage());
   } catch (error) {
       next(error);
+  }
+});
+
+wikiRoute.get('/:slug', async (req, res, next) => {
+  try {
+    const foundPage = await Page.findOne({
+      where: {slug: req.params.slug}
+    });
+    res.send(wikipage(foundPage,''));
+  }
+  catch (error) {
+    next(error);
   }
 });
 
